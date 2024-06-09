@@ -2,7 +2,7 @@
 
 This app allows you to create some bingo boards and translate the number into text! We used it for playing a musical bingo.
 
-[Try it online](https://adrianabreu.gitlab.io)
+[Try it online](https://adrianabreu.github.io/bingo-generator)
 
 ## Input
 There are two different variations the standard which uses a 4x4 board and the simplified which uses a 3x2 board.
