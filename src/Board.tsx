@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-export class Board extends React.Component<{ boards: string[][][] }, {}> {
+export class Board extends React.Component<{ boards: string[][][], header: string}, {}> {
   constructor(props) {
     super(props);
   }
@@ -12,7 +12,7 @@ export class Board extends React.Component<{ boards: string[][][] }, {}> {
           return (
             <div className="mx-bingo-board">
               <div className="mx-bingo-board_row--header">
-                <img src="" />
+                <img src={this.props.header} />
               </div>
               {board.map((row) => {
                 return (

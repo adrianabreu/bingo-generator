@@ -1,7 +1,7 @@
 type BingoBoard = Set<number>;
 
-export function isSafeGeneration(songs: number, boards: number): boolean {
-  return combinations(songs, 16) > boards;
+export function isSafeGeneration(songs: number, boards: number, height: number, width: number): boolean {
+  return combinations(songs, height * width) > boards;
 }
 
 function factorial(r) {
@@ -47,15 +47,16 @@ export function generateCombinations(
 }
 
 export function transformToDrawableMatrix(
-  combinations: BingoBoard[]
+  combinations: BingoBoard[],
+  width: number,
+  height: number
 ): number[][][] {
   let boards = [];
   let board = [];
   for (let i = 0; i < combinations.length; i++) {
-    board.push(Array.from(combinations[i]).slice(0, 4));
-    board.push(Array.from(combinations[i]).slice(4, 8));
-    board.push(Array.from(combinations[i]).slice(8, 12));
-    board.push(Array.from(combinations[i]).slice(12));
+    for (let j = 0; j < height; j++) {
+      board.push(Array.from(combinations[i]).slice(j * width, (j + 1) * width));
+    }
     boards.push(board);
     board = [];
   }

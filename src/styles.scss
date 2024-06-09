@@ -1,6 +1,6 @@
 body {
     width: 100vw;
-    font-family: 'Kalam';
+    font-family: 'Roboto', sans-serif;
     position: relative;
   }
   
@@ -13,7 +13,7 @@ body {
       margin-top: 6px;
       border: 2px solid #99a8b7;
       border-radius: 4px;
-      flex: 1 0 30%;
+      flex: 1 0 0;
       display: flex;
       flex-flow: column;
     }
@@ -24,6 +24,7 @@ body {
       padding: 10px;
       font-size: 14px;
       flex: 1 0 0px;
+      width: 0;
       text-align: center;
       border: 1px solid #99a8b7;
       display: flex;
@@ -40,7 +41,7 @@ body {
   
     &_row {
       display: flex;
-      flex: 1 0 auto;
+      flex: 1 0 0px;
   
       &--header {
         height: 60px;
@@ -123,38 +124,56 @@ body {
   }
   
   .mx-board-form {
-    display: block;
+    padding-left: 40px;
+    display: flex;
+    flex-flow:column;
+    max-width: 50%;
     font-size: 18px;
+    color: gray;
   
     &__sent {
       margin-top: 24px;
       margin-left: 12px;
       padding: 12px;
-      padding-top: 6px;
-      padding-bottom: 8px;
+      padding-top: 8px;
+      padding-bottom: 10px;
+      font-size: 18px;
       background-color: white;
       border-radius: 4px;
-      border: 1px solid #ccc;
-      font-weight: bold;
-      font-family: 'Kalam';
+      border:2px solid #ccc;
+      font-weight: 300;
     }
     &__group {
+      position: relative;
       display: flex;
       flex-direction: column;
-      padding-left: 16px;
-      margin-bottom: 10px;
+      margin-bottom: 15px;
+      min-height: 70px;
     }
   
     &__label {
       padding-bottom: 6px;
+      font-size: 18px;
+      font-weight: 100;
+      letter-spacing: .7px;
+      cursor: text;
     }
   
     &__input {
-      min-height: 24px;
       border-radius: 4px;
-      margin-left: 8px;
+      margin-left: 0px;
       border: 1px solid #ccc;
+      padding: 18px 15px 0 15px;
+      width: 100%;
+      border: none;
+      outline: none;
+
+      font-weight: 300;
+      font-size: 16px;
+      height: 28px;
       background-color: #f8f8f8;
+
+
       &--area {
         min-width: 400px;
         height: 400px;
