@@ -12,7 +12,7 @@ export default class App extends React.Component<{}, { boards: string[][][], hea
   render() {
     return (
       <div>
-        {this.state.boards ? (
+        {this.state.boards && this.state.header ? (
           <Board boards={this.state.boards} header={this.state.header}></Board>
         ) : (
           <InputForm

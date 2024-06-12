@@ -19,7 +19,7 @@ import {
       let amount = +event.target.elements[1].value;
       let width = +event.target.elements[2].value;
       let height = +event.target.elements[3].value;
-      let header = event.target.elements.value;
+      let header = event.target.elements[4].value;
 
       if (isSafeGeneration(songs, amount, height, width)) {
         let temp = transformToDrawableMatrix(
