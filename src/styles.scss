@@ -118,6 +118,20 @@ body {
   display: block;
 }
 
+/* Fixed card height: song rows share remaining space (screen preview). */
+.mx-bingo-board--fixed-height {
+  min-height: 0;
+
+  > .mx-bingo-board_row.mx-bingo-board_row--header {
+    flex: 0 0 60px;
+  }
+
+  > .mx-bingo-board_row:not(.mx-bingo-board_row--header) {
+    flex: 1 1 0;
+    min-height: 0;
+  }
+}
+
 @media print {
   $print-page-margin: 10mm;
   $print-grid-gap: 4mm;
@@ -245,6 +259,16 @@ body {
     font-size: 6px;
     line-height: 1.08;
     padding: 0.35mm 0.25mm;
+  }
+
+  .mx-bingo-board--fixed-height .mx-bingo-board_row:not(.mx-bingo-board_row--header) {
+    flex: 1 1 0;
+    min-height: 0;
+  }
+
+  .mx-bingo-board--fixed-height .mx-bingo-board_cell {
+    flex: 1 1 0;
+    min-height: 0;
   }
 
   .mx-print-opts {

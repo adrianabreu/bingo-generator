@@ -49,6 +49,11 @@ describe('Board', () => {
     expect(imgs[0]).toHaveAttribute('src', 'https://example.com/logo.png');
   });
 
+  it('adds fixed-height class when print card height is set', () => {
+    render(<Board boards={sampleBoards} header="" printCardHeightMm={70} />);
+    expect(document.querySelector('.mx-bingo-board--fixed-height')).not.toBeNull();
+  });
+
   it('places song cells inside grid rows', () => {
     const { container } = render(<Board boards={[sampleBoards[0]]} header="" />);
     const board = container.querySelector('.mx-bingo-board')!;

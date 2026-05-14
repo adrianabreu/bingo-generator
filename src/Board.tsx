@@ -62,7 +62,12 @@ export class Board extends React.Component<
               const globalIndex = sheetIndex * perSheet + boardIndex;
               return (
                 <div
-                  className="mx-bingo-board"
+                  className={[
+                    'mx-bingo-board',
+                    heightMm != null ? 'mx-bingo-board--fixed-height' : '',
+                  ]
+                    .filter(Boolean)
+                    .join(' ')}
                   key={globalIndex}
                   style={boardFixedHeightStyle}
                 >
