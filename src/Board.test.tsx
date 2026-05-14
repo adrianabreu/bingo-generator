@@ -78,7 +78,10 @@ describe('Board', () => {
     expect(sheets).toHaveLength(2);
     expect(sheets[0].querySelectorAll('.mx-bingo-board')).toHaveLength(6);
     expect(sheets[1].querySelectorAll('.mx-bingo-board')).toHaveLength(6);
-    expect(sheets[0]).toHaveStyle({ '--print-grid-cols': '3', '--print-grid-rows': '2' });
+    expect(sheets[0]).toHaveStyle({
+      '--print-grid-cols': '3',
+      '--print-board-mm': '46mm',
+    });
   });
 
   it('last print sheet holds fewer boards when total is not a multiple of per-page count', () => {

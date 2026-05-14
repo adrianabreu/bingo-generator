@@ -3,13 +3,24 @@ import './styles.scss';
 import { Board } from './Board';
 import { InputForm } from './InputForm';
 
-export default class App extends React.Component<
-  {},
-  { boards: string[][][] | undefined; header: string; boardsPerPrintPage: number }
-> {
+export type AppBoardsState = {
+  boards: string[][][] | undefined;
+  header: string;
+  boardsPerPrintPage: number;
+  printCardWidthMm: number;
+  printCardHeightMm: number | null;
+};
+
+export default class App extends React.Component<{}, AppBoardsState> {
   constructor(props) {
     super(props);
-    this.state = { boards: undefined, header: '', boardsPerPrintPage: 9 };
+    this.state = {
+      boards: undefined,
+      header: '',
+      boardsPerPrintPage: 9,
+      printCardWidthMm: 46,
+      printCardHeightMm: null,
+    };
   }
 
   render() {
@@ -20,12 +31,12 @@ export default class App extends React.Component<
             boards={this.state.boards}
             header={this.state.header}
             boardsPerPrintPage={this.state.boardsPerPrintPage}
+            printCardWidthMm={this.state.printCardWidthMm}
+            printCardHeightMm={this.state.printCardHeightMm}
           />
         ) : (
           <InputForm
-            setParentState={(b: string[][][], h: string, perPrint: number) =>
-              this.setState({ boards: b, header: h, boardsPerPrintPage: perPrint })
-            }
+            setParentState={(payload) => this.setState(payload)}
           />
         )}
       </div>

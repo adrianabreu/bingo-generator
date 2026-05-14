@@ -18,6 +18,14 @@ export const PRINT_PAGE_SIZE_OPTIONS = Object.keys(PRINT_LAYOUT_BY_COUNT)
   .map(Number)
   .sort((a, b) => a - b);
 
+/** ~A4 landscape printable width (mm) with 10mm margins — used to warn if cards won’t fit. */
+export const PRINTABLE_WIDTH_MM_APPROX = 277;
+
+export const PRINT_CARD_WIDTH_MM_MIN = 20;
+export const PRINT_CARD_WIDTH_MM_MAX = 95;
+export const PRINT_CARD_HEIGHT_MM_MIN = 25;
+export const PRINT_CARD_HEIGHT_MM_MAX = 200;
+
 export function getPrintGridLayout(boardsPerPage: number): {
   cols: number;
   rows: number;
@@ -26,6 +34,31 @@ export function getPrintGridLayout(boardsPerPage: number): {
   const count = PRINT_LAYOUT_BY_COUNT[boardsPerPage] ? boardsPerPage : DEFAULT_BOARDS_PER_PRINT_PAGE;
   const { cols, rows } = PRINT_LAYOUT_BY_COUNT[count];
   return { cols, rows, count };
+}
+
+/** Suggested default print card width (mm) when the form leaves width unset. */
+export function getSuggestedPrintCardWidthMm(columnCount: number): number {
+  const mm = columnCount >= 4 ? 36 : columnCount >= 3 ? 46 : columnCount >= 2 ? 56 : 76;
+  return clampPrintCardWidthMm(mm);
+}
+
+export function clampPrintCardWidthMm(value: number): number {
+  return Math.min(PRINT_CARD_WIDTH_MM_MAX, Math.max(PRINT_CARD_WIDTH_MM_MIN, Math.round(value)));
+}
+
+/** `null` = height grows with content (auto). */
+export function normalizePrintCardHeightMm(value: number | undefined | null): number | null {
+  if (value == null || !Number.isFinite(value) || value <= 0) return null;
+  return Math.min(PRINT_CARD_HEIGHT_MM_MAX, Math.max(PRINT_CARD_HEIGHT_MM_MIN, Math.round(value)));
+}
+
+export function printRowFitsApproxLandscape(
+  columnCount: number,
+  cardWidthMm: number,
+  gapMm: number = 4
+): boolean {
+  if (columnCount < 1) return true;
+  return columnCount * cardWidthMm + (columnCount - 1) * gapMm <= PRINTABLE_WIDTH_MM_APPROX + 0.5;
 }
 
 export function chunkIntoSheets<T>(items: readonly T[], perSheet: number): T[][] {

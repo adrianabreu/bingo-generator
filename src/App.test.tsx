@@ -39,10 +39,12 @@ describe('App UI', () => {
     render(<App />);
     expect(screen.getByRole('button', { name: /generate/i })).toBeInTheDocument();
     expect(screen.getByLabelText(/song list/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/^boards$/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/^width$/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/^height$/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/how many boards \(total\)/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/song grid.*across/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/song grid.*down/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/boards per printed page/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/print.*each card width/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/print.*each card height/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/header image url/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/upload header image/i)).toBeInTheDocument();
   });
@@ -52,9 +54,9 @@ describe('App UI', () => {
     render(<App />);
 
     await user.type(screen.getByLabelText(/song list/i), 'A\nB\nC\nD');
-    await user.type(screen.getByLabelText(/^boards$/i), '1');
-    await user.type(screen.getByLabelText(/^width$/i), '2');
-    await user.type(screen.getByLabelText(/^height$/i), '2');
+    await user.type(screen.getByLabelText(/how many boards \(total\)/i), '1');
+    await user.type(screen.getByLabelText(/song grid.*across/i), '2');
+    await user.type(screen.getByLabelText(/song grid.*down/i), '2');
     await user.click(screen.getByRole('button', { name: /generate/i }));
 
     await waitFor(() => {
@@ -76,9 +78,9 @@ describe('App UI', () => {
     render(<App />);
     try {
       await user.type(screen.getByLabelText(/song list/i), 'only');
-      await user.type(screen.getByLabelText(/^boards$/i), '99');
-      await user.type(screen.getByLabelText(/^width$/i), '5');
-      await user.type(screen.getByLabelText(/^height$/i), '5');
+      await user.type(screen.getByLabelText(/how many boards \(total\)/i), '99');
+      await user.type(screen.getByLabelText(/song grid.*across/i), '5');
+      await user.type(screen.getByLabelText(/song grid.*down/i), '5');
       await user.click(screen.getByRole('button', { name: /generate/i }));
 
       await waitFor(() => {
@@ -108,9 +110,9 @@ describe('App UI', () => {
 
     render(<App />);
     await user.type(screen.getByLabelText(/song list/i), 'A\nB\nC\nD');
-    await user.type(screen.getByLabelText(/^boards$/i), '1');
-    await user.type(screen.getByLabelText(/^width$/i), '2');
-    await user.type(screen.getByLabelText(/^height$/i), '2');
+    await user.type(screen.getByLabelText(/how many boards \(total\)/i), '1');
+    await user.type(screen.getByLabelText(/song grid.*across/i), '2');
+    await user.type(screen.getByLabelText(/song grid.*down/i), '2');
 
     const file = new File(['x'], 'banner.png', { type: 'image/png' });
     await user.upload(screen.getByLabelText(/upload header image/i), file);

@@ -6,7 +6,10 @@ import {
   DEFAULT_BOARDS_PER_PRINT_PAGE,
   PRINT_LAYOUT_BY_COUNT,
   chunkIntoSheets,
+  clampPrintCardWidthMm,
   getPrintGridLayout,
+  getSuggestedPrintCardWidthMm,
+  printRowFitsApproxLandscape,
 } from './constants/printLayout';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -31,6 +34,23 @@ describe('print layout', () => {
       [12, 13],
     ]);
   });
+
+  it('suggests default print card width by column count', () => {
+    expect(getSuggestedPrintCardWidthMm(1)).toBe(76);
+    expect(getSuggestedPrintCardWidthMm(2)).toBe(56);
+    expect(getSuggestedPrintCardWidthMm(3)).toBe(46);
+    expect(getSuggestedPrintCardWidthMm(4)).toBe(36);
+  });
+
+  it('clamps print card width', () => {
+    expect(clampPrintCardWidthMm(10)).toBe(20);
+    expect(clampPrintCardWidthMm(120)).toBe(95);
+  });
+
+  it('detects when a row of cards may exceed landscape width', () => {
+    expect(printRowFitsApproxLandscape(3, 46)).toBe(true);
+    expect(printRowFitsApproxLandscape(3, 100)).toBe(false);
+  });
 });
 
 describe('print stylesheet (landscape + grid)', () => {
@@ -40,11 +60,12 @@ describe('print stylesheet (landscape + grid)', () => {
     expect(scss).toMatch(/@page[\s\S]*size:[^;{]*landscape/);
   });
 
-  it('uses CSS variables for print grid columns and rows', () => {
+  it('uses fixed-width print columns and intrinsic sheet height', () => {
     const scssPath = join(__dirname, 'styles.scss');
     const scss = readFileSync(scssPath, 'utf8');
     expect(scss).toMatch(/grid-template-columns:\s*repeat\(var\(--print-grid-cols/);
-    expect(scss).toMatch(/grid-template-rows:\s*repeat\(var\(--print-grid-rows/);
-    expect(scss).toMatch(/210mm/);
+    expect(scss).toMatch(/var\(--print-board-mm/);
+    expect(scss).toMatch(/grid-auto-rows:\s*auto/);
+    expect(scss).toMatch(/width:\s*max-content/);
   });
 });
