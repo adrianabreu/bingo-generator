@@ -68,6 +68,29 @@ describe('App UI', () => {
     const imgs = screen.getAllByRole('img', { name: /bingo card header/i });
     expect(imgs[0].getAttribute('src')).toBe(DEFAULT_BINGO_HEADER_IMAGE);
     expect(screen.queryByRole('button', { name: /generate/i })).not.toBeInTheDocument();
+    expect(screen.getByTestId('print-options-panel')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /print layout/i })).toBeInTheDocument();
+  });
+
+  it('shows print options on the board view and can return to the form', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    await user.type(screen.getByLabelText(/song list/i), 'A\nB\nC\nD');
+    await user.type(screen.getByLabelText(/how many boards \(total\)/i), '1');
+    await user.type(screen.getByLabelText(/song grid.*across/i), '2');
+    await user.type(screen.getByLabelText(/song grid.*down/i), '2');
+    await user.click(screen.getByRole('button', { name: /generate/i }));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('print-options-panel')).toBeInTheDocument();
+    });
+
+    await user.selectOptions(screen.getByLabelText(/boards per printed page/i), '6');
+    expect((screen.getByLabelText(/boards per printed page/i) as HTMLSelectElement).value).toBe('6');
+
+    await user.click(screen.getByRole('button', { name: /change songs/i }));
+    expect(screen.getByRole('button', { name: /generate/i })).toBeInTheDocument();
   });
 
   it('calls alert when validation fails', async () => {

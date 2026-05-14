@@ -2,6 +2,7 @@ import * as React from 'react';
 import './styles.scss';
 import { Board } from './Board';
 import { InputForm } from './InputForm';
+import { PrintOptionsPanel } from './PrintOptionsPanel';
 
 export type AppBoardsState = {
   boards: string[][][] | undefined;
@@ -27,13 +28,24 @@ export default class App extends React.Component<{}, AppBoardsState> {
     return (
       <div>
         {this.state.boards ? (
-          <Board
-            boards={this.state.boards}
-            header={this.state.header}
-            boardsPerPrintPage={this.state.boardsPerPrintPage}
-            printCardWidthMm={this.state.printCardWidthMm}
-            printCardHeightMm={this.state.printCardHeightMm}
-          />
+          <>
+            <PrintOptionsPanel
+              boardsPerPrintPage={this.state.boardsPerPrintPage}
+              printCardWidthMm={this.state.printCardWidthMm}
+              printCardHeightMm={this.state.printCardHeightMm}
+              onBoardsPerPrintPage={(boardsPerPrintPage) => this.setState({ boardsPerPrintPage })}
+              onPrintCardWidthMm={(printCardWidthMm) => this.setState({ printCardWidthMm })}
+              onPrintCardHeightMm={(printCardHeightMm) => this.setState({ printCardHeightMm })}
+              onBackToGenerator={() => this.setState({ boards: undefined })}
+            />
+            <Board
+              boards={this.state.boards}
+              header={this.state.header}
+              boardsPerPrintPage={this.state.boardsPerPrintPage}
+              printCardWidthMm={this.state.printCardWidthMm}
+              printCardHeightMm={this.state.printCardHeightMm}
+            />
+          </>
         ) : (
           <InputForm
             setParentState={(payload) => this.setState(payload)}
