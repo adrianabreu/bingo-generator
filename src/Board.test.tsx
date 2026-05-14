@@ -53,7 +53,7 @@ describe('Board', () => {
     const { container } = render(<Board boards={[sampleBoards[0]]} header="" />);
     const board = container.querySelector('.mx-bingo-board')!;
     expect(board.querySelector('.mx-bingo-board_row--header')).not.toBeNull();
-    const dataRows = board.querySelectorAll(':scope > .mx-bingo-board_row');
+    const dataRows = board.querySelectorAll(':scope > .mx-bingo-board_row:not(.mx-bingo-board_row--header)');
     expect(dataRows).toHaveLength(2);
     expect(within(dataRows[0] as HTMLElement).getByText('Alpha')).toBeInTheDocument();
     expect(within(dataRows[0] as HTMLElement).getByText('Bravo')).toBeInTheDocument();

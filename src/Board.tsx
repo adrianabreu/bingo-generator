@@ -41,7 +41,7 @@ export class Board extends React.Component<
               const globalIndex = sheetIndex * perSheet + boardIndex;
               return (
                 <div className="mx-bingo-board" key={globalIndex}>
-                  <div className="mx-bingo-board_row--header">
+                  <div className="mx-bingo-board_row mx-bingo-board_row--header">
                     <img src={headerSrc} alt="Bingo card header" />
                   </div>
                   {board.map((row, rowIndex) => (
