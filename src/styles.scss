@@ -154,8 +154,8 @@ body {
 
   .mx-bingo-print-sheet {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(3, 1fr);
+    grid-template-columns: repeat(var(--print-grid-cols, 3), 1fr);
+    grid-template-rows: repeat(var(--print-grid-rows, 3), 1fr);
     gap: $print-grid-gap;
     width: 100%;
     height: $print-sheet-height;

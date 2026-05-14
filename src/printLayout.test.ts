@@ -3,26 +3,32 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import {
-  BOARDS_PER_PRINT_SHEET,
-  PRINT_GRID_COLUMNS,
-  PRINT_GRID_ROWS,
+  DEFAULT_BOARDS_PER_PRINT_PAGE,
+  PRINT_LAYOUT_BY_COUNT,
   chunkIntoSheets,
+  getPrintGridLayout,
 } from './constants/printLayout';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-describe('print layout constants', () => {
-  it('uses a 3×3 grid so nine boards fit on one landscape sheet', () => {
-    expect(PRINT_GRID_COLUMNS * PRINT_GRID_ROWS).toBe(BOARDS_PER_PRINT_SHEET);
-    expect(BOARDS_PER_PRINT_SHEET).toBe(9);
+describe('print layout', () => {
+  it('maps each preset count to a grid whose area matches the count', () => {
+    for (const [count, { cols, rows }] of Object.entries(PRINT_LAYOUT_BY_COUNT)) {
+      expect(cols * rows).toBe(+count);
+    }
   });
 
-  it('chunks boards into sheets of nine', () => {
+  it('defaults unknown boards-per-page to nine', () => {
+    expect(getPrintGridLayout(99)).toEqual({ cols: 3, rows: 3, count: DEFAULT_BOARDS_PER_PRINT_PAGE });
+  });
+
+  it('chunks by explicit per-sheet size', () => {
     const items = Array.from({ length: 14 }, (_, i) => i);
-    const sheets = chunkIntoSheets(items);
+    const sheets = chunkIntoSheets(items, 6);
     expect(sheets).toEqual([
-      [0, 1, 2, 3, 4, 5, 6, 7, 8],
-      [9, 10, 11, 12, 13],
+      [0, 1, 2, 3, 4, 5],
+      [6, 7, 8, 9, 10, 11],
+      [12, 13],
     ]);
   });
 });
@@ -34,16 +40,11 @@ describe('print stylesheet (landscape + grid)', () => {
     expect(scss).toMatch(/@page[\s\S]*size:[^;{]*landscape/);
   });
 
-  it('uses three equal grid rows per print sheet', () => {
+  it('uses CSS variables for print grid columns and rows', () => {
     const scssPath = join(__dirname, 'styles.scss');
     const scss = readFileSync(scssPath, 'utf8');
-    expect(scss).toMatch(/\.mx-bingo-print-sheet\s*\{[^}]*grid-template-rows:\s*repeat\(3,\s*1fr\)/s);
+    expect(scss).toMatch(/grid-template-columns:\s*repeat\(var\(--print-grid-cols/);
+    expect(scss).toMatch(/grid-template-rows:\s*repeat\(var\(--print-grid-rows/);
     expect(scss).toMatch(/210mm/);
-  });
-
-  it('uses a 3-column grid on each print sheet', () => {
-    const scssPath = join(__dirname, 'styles.scss');
-    const scss = readFileSync(scssPath, 'utf8');
-    expect(scss).toMatch(/\.mx-bingo-print-sheet\s*\{[^}]*grid-template-columns:\s*repeat\(3,\s*1fr\)/s);
   });
 });

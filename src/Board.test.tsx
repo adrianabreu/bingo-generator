@@ -59,7 +59,7 @@ describe('Board', () => {
     expect(within(dataRows[0] as HTMLElement).getByText('Bravo')).toBeInTheDocument();
   });
 
-  it('chunks boards into print sheets of 9 for pagination', () => {
+  it('chunks boards into print sheets of 9 for pagination by default', () => {
     const boards = Array.from({ length: 12 }, (_, i) => singleCellBoard(`C${i}`));
     const { container } = render(<Board boards={boards} header="" />);
 
@@ -70,7 +70,18 @@ describe('Board', () => {
     expect(container.querySelectorAll('.mx-bingo-board')).toHaveLength(12);
   });
 
-  it('last print sheet holds fewer than 9 boards when total is not a multiple of 9', () => {
+  it('respects boardsPerPrintPage for sheet size and grid CSS variables', () => {
+    const boards = Array.from({ length: 12 }, (_, i) => singleCellBoard(`C${i}`));
+    render(<Board boards={boards} header="" boardsPerPrintPage={6} />);
+
+    const sheets = screen.getAllByTestId('bingo-print-sheet');
+    expect(sheets).toHaveLength(2);
+    expect(sheets[0].querySelectorAll('.mx-bingo-board')).toHaveLength(6);
+    expect(sheets[1].querySelectorAll('.mx-bingo-board')).toHaveLength(6);
+    expect(sheets[0]).toHaveStyle({ '--print-grid-cols': '3', '--print-grid-rows': '2' });
+  });
+
+  it('last print sheet holds fewer boards when total is not a multiple of per-page count', () => {
     const boards = Array.from({ length: 8 }, (_, i) => singleCellBoard(`K${i}`));
     render(<Board boards={boards} header="" />);
     const sheets = screen.getAllByTestId('bingo-print-sheet');

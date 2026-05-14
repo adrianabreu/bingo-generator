@@ -1,8 +1,9 @@
 import { generateCombinations, isSafeGeneration } from './core/BingoGenerator';
 import * as React from 'react';
+import { DEFAULT_BOARDS_PER_PRINT_PAGE, PRINT_LAYOUT_BY_COUNT } from './constants/printLayout';
 
 type Props = {
-  setParentState: (boards: string[][][], header: string) => void;
+  setParentState: (boards: string[][][], header: string, boardsPerPrintPage: number) => void;
 };
 
 export class InputForm extends React.Component<Props> {
@@ -24,6 +25,10 @@ export class InputForm extends React.Component<Props> {
     const headerUrl = (form.elements.namedItem('headerUrl') as HTMLInputElement).value.trim();
     const headerFileInput = form.elements.namedItem('headerFile') as HTMLInputElement;
     const file = headerFileInput.files?.[0];
+    const boardsPerPrintRaw = +(form.elements.namedItem('boardsPerPrintPage') as HTMLSelectElement).value;
+    const boardsPerPrintPage = PRINT_LAYOUT_BY_COUNT[boardsPerPrintRaw]
+      ? boardsPerPrintRaw
+      : DEFAULT_BOARDS_PER_PRINT_PAGE;
 
     const finish = (header: string) => {
       if (!isSafeGeneration(songs, amount, height, width)) {
@@ -40,7 +45,7 @@ export class InputForm extends React.Component<Props> {
       }
 
       const temp = matrices.map((board) => board.map((row) => row.map((cell) => lines[cell])));
-      this.props.setParentState(temp, header);
+      this.props.setParentState(temp, header, boardsPerPrintPage);
     };
 
     if (file) {
@@ -85,6 +90,24 @@ export class InputForm extends React.Component<Props> {
             Height
           </label>
           <input className="mx-board-form__input" type="number" id="height" name="height" />
+        </div>
+        <div className="mx-board-form__group">
+          <label className="mx-board-form__label" htmlFor="boardsPerPrintPage">
+            Boards per printed page
+          </label>
+          <select
+            className="mx-board-form__input"
+            id="boardsPerPrintPage"
+            name="boardsPerPrintPage"
+            defaultValue={DEFAULT_BOARDS_PER_PRINT_PAGE}
+          >
+            <option value={1}>1 (1×1)</option>
+            <option value={2}>2 (2×1)</option>
+            <option value={4}>4 (2×2)</option>
+            <option value={6}>6 (3×2)</option>
+            <option value={9}>9 (3×3)</option>
+            <option value={12}>12 (4×3)</option>
+          </select>
         </div>
         <div className="mx-board-form__group">
           <label className="mx-board-form__label" htmlFor="headerUrl">

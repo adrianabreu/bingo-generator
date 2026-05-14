@@ -42,6 +42,7 @@ describe('App UI', () => {
     expect(screen.getByLabelText(/^boards$/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/^width$/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/^height$/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/boards per printed page/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/header image url/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/upload header image/i)).toBeInTheDocument();
   });
