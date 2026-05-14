@@ -12,14 +12,12 @@ export default class App extends React.Component<{}, { boards: string[][][], hea
   render() {
     return (
       <div>
-        {this.state.boards && this.state.header ? (
+        {this.state.boards ? (
           <Board boards={this.state.boards} header={this.state.header}></Board>
         ) : (
           <InputForm
             setParentState={(b: string[][][], h: string) => this.setState({ boards: b, header: h})}
-          >
-            {' '}
-          </InputForm>
+          />
         )}
       </div>
     );

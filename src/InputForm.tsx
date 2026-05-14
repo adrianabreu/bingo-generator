@@ -1,71 +1,119 @@
-import {
-    generateCombinations,
-    transformToDrawableMatrix,
-    isSafeGeneration,
-  } from './core/BingoGenerator';
-  import * as React from 'react';
-  
-  export class InputForm extends React.Component<any, { value: string }> {
-    constructor(props) {
-      super(props);
-      this.handleSubmit = this.handleSubmit.bind(this);
-    }
-  
-    handleSubmit(event) {
-      event.preventDefault();
-  
-      let lines = event.target.elements[0].value.split('\n');
-      let songs = lines.length;
-      let amount = +event.target.elements[1].value;
-      let width = +event.target.elements[2].value;
-      let height = +event.target.elements[3].value;
-      let header = event.target.elements[4].value;
+import { generateCombinations, isSafeGeneration } from './core/BingoGenerator';
+import * as React from 'react';
 
-      if (isSafeGeneration(songs, amount, height, width)) {
-        let temp = transformToDrawableMatrix(
-          generateCombinations(width, height, songs, amount),
-          width,
-          height
-        ).map((board) => board.map((row) => row.map((cell) => lines[cell])));
-  
-        this.props.setParentState(temp, header);
-      } else {
-        alert('Preventing loop. You need either more lines or less cartons');
+type Props = {
+  setParentState: (boards: string[][][], header: string) => void;
+};
+
+export class InputForm extends React.Component<Props> {
+  constructor(props: Props) {
+    super(props);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const form = event.currentTarget;
+
+    const songsField = form.elements.namedItem('songs') as HTMLTextAreaElement;
+    const lines = songsField.value.split('\n');
+    const songs = lines.length;
+    const amount = +(form.elements.namedItem('boards') as HTMLInputElement).value;
+    const width = +(form.elements.namedItem('width') as HTMLInputElement).value;
+    const height = +(form.elements.namedItem('height') as HTMLInputElement).value;
+    const headerUrl = (form.elements.namedItem('headerUrl') as HTMLInputElement).value.trim();
+    const headerFileInput = form.elements.namedItem('headerFile') as HTMLInputElement;
+    const file = headerFileInput.files?.[0];
+
+    const finish = (header: string) => {
+      if (!isSafeGeneration(songs, amount, height, width)) {
+        alert(
+          'Need at least width×height song lines, and enough combinations for unique boards (fewer boards or more songs).'
+        );
+        return;
       }
-    }
-  
-    render() {
-      return (
-        <form className="mx-board-form" onSubmit={this.handleSubmit}>
-          <div className="mx-board-form__group">
-            <label className="mx-board-form__label mx-board-form__label--area">Song list</label>
-            <textarea className="mx-board-form__input mx-board-form__input--area" />
-          </div>
-          <div className="mx-board-form__group">
-            <label className="mx-board-form__label">Boards</label>
-            <input className="mx-board-form__input" type="number" id="boards" />
-          </div>
-          <div className="mx-board-form__group">
-            <label className="mx-board-form__label">Width</label>
-            <input className="mx-board-form__input" type="number" id="width" />
-          </div>
-          <div className="mx-board-form__group">
-            <label className="mx-board-form__label">Height</label>
-            <input className="mx-board-form__input" type="number" id="height" />
-          </div>
-          <div className="mx-board-form__group">
-            <label className="mx-board-form__label">Header URL</label>
-            <input className="mx-board-form__input" type="text" id="header" />
-          </div>
-          <div className="mx-board-form__group">
-            <input
-              className="mx-board-form__sent"
-              type="submit"
-              value="Generate"
-            />
-          </div>
-        </form>
-      );
+
+      const matrices = generateCombinations(width, height, songs, amount);
+      if (!matrices) {
+        alert('Could not generate enough unique boards in time. Try fewer boards or more songs.');
+        return;
+      }
+
+      const temp = matrices.map((board) => board.map((row) => row.map((cell) => lines[cell])));
+      this.props.setParentState(temp, header);
+    };
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => finish(typeof reader.result === 'string' ? reader.result : headerUrl);
+      reader.onerror = () => {
+        alert('Could not read the image file. Try another file or use a header URL instead.');
+      };
+      reader.readAsDataURL(file);
+    } else {
+      finish(headerUrl);
     }
   }
-  
+
+  render() {
+    return (
+      <form className="mx-board-form" onSubmit={this.handleSubmit}>
+        <div className="mx-board-form__group">
+          <label className="mx-board-form__label mx-board-form__label--area" htmlFor="songs">
+            Song list
+          </label>
+          <textarea
+            id="songs"
+            name="songs"
+            className="mx-board-form__input mx-board-form__input--area"
+          />
+        </div>
+        <div className="mx-board-form__group">
+          <label className="mx-board-form__label" htmlFor="boards">
+            Boards
+          </label>
+          <input className="mx-board-form__input" type="number" id="boards" name="boards" />
+        </div>
+        <div className="mx-board-form__group">
+          <label className="mx-board-form__label" htmlFor="width">
+            Width
+          </label>
+          <input className="mx-board-form__input" type="number" id="width" name="width" />
+        </div>
+        <div className="mx-board-form__group">
+          <label className="mx-board-form__label" htmlFor="height">
+            Height
+          </label>
+          <input className="mx-board-form__input" type="number" id="height" name="height" />
+        </div>
+        <div className="mx-board-form__group">
+          <label className="mx-board-form__label" htmlFor="headerUrl">
+            Header image URL (optional)
+          </label>
+          <input
+            className="mx-board-form__input"
+            type="url"
+            id="headerUrl"
+            name="headerUrl"
+            placeholder="https://…"
+          />
+        </div>
+        <div className="mx-board-form__group">
+          <label className="mx-board-form__label" htmlFor="headerFile">
+            Or upload header image
+          </label>
+          <input
+            className="mx-board-form__input mx-board-form__input--file"
+            type="file"
+            id="headerFile"
+            name="headerFile"
+            accept="image/*"
+          />
+        </div>
+        <div className="mx-board-form__group">
+          <input className="mx-board-form__sent" type="submit" value="Generate" />
+        </div>
+      </form>
+    );
+  }
+}

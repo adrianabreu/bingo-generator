@@ -1,31 +1,47 @@
 import * as React from 'react';
+import { BOARDS_PER_PRINT_SHEET, chunkIntoSheets } from './constants/printLayout';
+import { DEFAULT_BINGO_HEADER_IMAGE } from './defaultHeader';
 
-export class Board extends React.Component<{ boards: string[][][], header: string}, {}> {
-  constructor(props) {
+export class Board extends React.Component<{ boards: string[][][]; header: string }, {}> {
+  constructor(props: { boards: string[][][]; header: string }) {
     super(props);
   }
 
   render() {
+    const headerSrc =
+      this.props.header && this.props.header.trim() ? this.props.header.trim() : DEFAULT_BINGO_HEADER_IMAGE;
+    const sheets = chunkIntoSheets(this.props.boards);
+
     return (
       <div className="mx-bingo">
-        {this.props.boards.map((board) => {
-          return (
-            <div className="mx-bingo-board">
-              <div className="mx-bingo-board_row--header">
-                <img src={this.props.header} />
-              </div>
-              {board.map((row) => {
-                return (
-                  <div className="mx-bingo-board_row">
-                    {row.map((cell) => (
-                      <div className="mx-bingo-board_cell">{cell}</div>
-                    ))}
+        {sheets.map((boardsOnSheet, sheetIndex) => (
+          <div
+            className="mx-bingo-print-sheet"
+            key={sheetIndex}
+            data-testid="bingo-print-sheet"
+            aria-label={`Print sheet ${sheetIndex + 1} of ${sheets.length}`}
+          >
+            {boardsOnSheet.map((board, boardIndex) => {
+              const globalIndex = sheetIndex * BOARDS_PER_PRINT_SHEET + boardIndex;
+              return (
+                <div className="mx-bingo-board" key={globalIndex}>
+                  <div className="mx-bingo-board_row--header">
+                    <img src={headerSrc} alt="Bingo card header" />
                   </div>
-                );
-              })}
-            </div>
-          );
-        })}
+                  {board.map((row, rowIndex) => (
+                    <div className="mx-bingo-board_row" key={rowIndex}>
+                      {row.map((cell, cellIndex) => (
+                        <div className="mx-bingo-board_cell" key={cellIndex}>
+                          {cell}
+                        </div>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              );
+            })}
+          </div>
+        ))}
       </div>
     );
   }
