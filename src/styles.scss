@@ -167,7 +167,8 @@ body {
 
   .mx-bingo-print-sheet {
     display: grid;
-    grid-template-columns: repeat(var(--print-grid-cols, 3), var(--print-board-mm, 46mm));
+    /* minmax(0, …): wide header images must not expand grid tracks in print/PDF. */
+    grid-template-columns: repeat(var(--print-grid-cols, 3), minmax(0, var(--print-board-mm, 46mm)));
     grid-auto-rows: auto;
     align-items: stretch;
     justify-content: center;
@@ -228,6 +229,9 @@ body {
       height: 9mm;
       min-height: 9mm;
       min-width: 0;
+      /* Block + positioned img: flex/% sizing on images often mis-renders in Save-as-PDF. */
+      display: block;
+      position: relative;
       overflow: hidden;
       line-height: 0;
       background-color: var(--bingo-header-strip);
@@ -236,6 +240,22 @@ body {
       border-radius: 0;
       margin: -1px 0 0 0;
       width: 100%;
+
+      img {
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+        height: 100%;
+        margin: 0;
+        object-fit: cover;
+        object-position: center;
+        display: block;
+      }
     }
 
     &:not(.mx-bingo-board_row--header) {
