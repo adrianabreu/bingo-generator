@@ -281,6 +281,10 @@ body {
     padding: 0.35mm 0.25mm;
   }
 
+  .mx-bingo-board_header-banner {
+    background-size: var(--print-header-bg-width-mm, 59.8mm) auto;
+  }
+
   .mx-print-opts {
     display: none !important;
   }

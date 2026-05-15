@@ -4,6 +4,7 @@ import {
   FIXED_PRINT_CARD_HEIGHT_MM,
   FIXED_PRINT_CARD_WIDTH_MM,
   FIXED_PRINT_GRID_COLS,
+  FIXED_PRINT_HEADER_IMAGE_WIDTH_MM,
   chunkIntoSheets,
 } from './constants/printLayout';
 import { DEFAULT_BINGO_HEADER_IMAGE } from './defaultHeader';
@@ -35,6 +36,7 @@ export class Board extends React.Component<{ boards: string[][][]; header: strin
 
     const headerBannerStyle: React.CSSProperties = {
       backgroundImage: `url(${JSON.stringify(headerSrc)})`,
+      ['--print-header-bg-width-mm' as string]: `${FIXED_PRINT_HEADER_IMAGE_WIDTH_MM}mm`,
     };
 
     return (

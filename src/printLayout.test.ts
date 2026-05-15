@@ -9,6 +9,7 @@ import {
   FIXED_PRINT_CARD_WIDTH_MM,
   FIXED_PRINT_GRID_COLS,
   FIXED_PRINT_GRID_ROWS,
+  FIXED_PRINT_HEADER_IMAGE_WIDTH_MM,
   PRINT_LAYOUT_BY_COUNT,
   chunkIntoSheets,
   clampPrintCardWidthMm,
@@ -26,6 +27,7 @@ describe('print layout', () => {
     expect(FIXED_PRINT_GRID_ROWS).toBe(3);
     expect(FIXED_PRINT_CARD_WIDTH_MM).toBe(60);
     expect(FIXED_PRINT_CARD_HEIGHT_MM).toBe(45);
+    expect(FIXED_PRINT_HEADER_IMAGE_WIDTH_MM).toBe(59.8);
   });
 
   it('maps each preset count to a grid whose area matches the count', () => {
