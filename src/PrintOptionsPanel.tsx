@@ -5,6 +5,8 @@ import {
   FIXED_PRINT_CARD_WIDTH_MM,
   FIXED_PRINT_GRID_COLS,
   FIXED_PRINT_GRID_ROWS,
+  FIXED_PRINT_HEADER_IMAGE_WIDTH_MM,
+  FIXED_PRINT_HEADER_STRIP_HEIGHT_MM,
 } from './constants/printLayout';
 
 export type PrintOptionsPanelProps = {
@@ -42,6 +44,12 @@ export class PrintOptionsPanel extends React.Component<PrintOptionsPanelProps> {
           <div className="mx-print-opts__fixed-row">
             <dt>Each card height</dt>
             <dd>{FIXED_PRINT_CARD_HEIGHT_MM} mm</dd>
+          </div>
+          <div className="mx-print-opts__fixed-row">
+            <dt>Header image (print)</dt>
+            <dd>
+              {FIXED_PRINT_HEADER_IMAGE_WIDTH_MM} mm × {FIXED_PRINT_HEADER_STRIP_HEIGHT_MM} mm
+            </dd>
           </div>
         </dl>
       </div>

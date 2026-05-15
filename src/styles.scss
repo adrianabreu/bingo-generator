@@ -212,7 +212,7 @@ body {
       left: 0;
       right: 0;
       top: 0;
-      height: 9mm;
+      height: var(--print-header-strip-mm, 20mm);
       background-color: var(--bingo-header-strip);
       z-index: 0;
       pointer-events: none;
@@ -227,9 +227,9 @@ body {
     z-index: 1;
 
     &--header {
-      flex: 0 0 9mm;
-      height: 9mm;
-      min-height: 9mm;
+      flex: 0 0 var(--print-header-strip-mm, 20mm);
+      height: var(--print-header-strip-mm, 20mm);
+      min-height: var(--print-header-strip-mm, 20mm);
       min-width: 0;
       display: block;
       position: relative;

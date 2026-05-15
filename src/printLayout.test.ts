@@ -29,7 +29,7 @@ describe('print layout', () => {
     expect(FIXED_PRINT_CARD_WIDTH_MM).toBe(60);
     expect(FIXED_PRINT_CARD_HEIGHT_MM).toBe(45);
     expect(FIXED_PRINT_HEADER_IMAGE_WIDTH_MM).toBe(58);
-    expect(FIXED_PRINT_HEADER_STRIP_HEIGHT_MM).toBe(9);
+    expect(FIXED_PRINT_HEADER_STRIP_HEIGHT_MM).toBe(20);
   });
 
   it('maps each preset count to a grid whose area matches the count', () => {

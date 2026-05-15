@@ -33,6 +33,7 @@ export class Board extends React.Component<{ boards: string[][][]; header: strin
     const boardFixedHeightStyle: React.CSSProperties = {
       height: `${heightMm}mm`,
       overflow: 'hidden',
+      ['--print-header-strip-mm' as string]: `${FIXED_PRINT_HEADER_STRIP_HEIGHT_MM}mm`,
     };
 
     const headerImgStyle: React.CSSProperties = {

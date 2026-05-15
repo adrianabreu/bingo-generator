@@ -9,6 +9,8 @@ import {
   FIXED_PRINT_CARD_WIDTH_MM,
   FIXED_PRINT_GRID_COLS,
   FIXED_PRINT_GRID_ROWS,
+  FIXED_PRINT_HEADER_IMAGE_WIDTH_MM,
+  FIXED_PRINT_HEADER_STRIP_HEIGHT_MM,
 } from './constants/printLayout';
 
 const genMocks = vi.hoisted(() => ({
@@ -55,6 +57,9 @@ describe('App UI', () => {
     expect(screen.getByText(`${FIXED_PRINT_GRID_COLS} × ${FIXED_PRINT_GRID_ROWS}`)).toBeInTheDocument();
     expect(screen.getByText(`${FIXED_PRINT_CARD_WIDTH_MM} mm`)).toBeInTheDocument();
     expect(screen.getByText(`${FIXED_PRINT_CARD_HEIGHT_MM} mm`)).toBeInTheDocument();
+    expect(
+      screen.getByText(`${FIXED_PRINT_HEADER_IMAGE_WIDTH_MM} mm × ${FIXED_PRINT_HEADER_STRIP_HEIGHT_MM} mm`)
+    ).toBeInTheDocument();
     expect(screen.getByLabelText(/header image url/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/upload header image/i)).toBeInTheDocument();
   });
