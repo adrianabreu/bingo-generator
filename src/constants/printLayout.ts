@@ -7,8 +7,10 @@ export const FIXED_PRINT_GRID_COLS = 3;
 export const FIXED_PRINT_GRID_ROWS = 3;
 export const FIXED_PRINT_CARD_WIDTH_MM = 60;
 export const FIXED_PRINT_CARD_HEIGHT_MM = 45;
-/** Header background width on print/PDF (mm). “598mm” for a 60mm-wide card is interpreted as 59.8mm (card minus borders). */
-export const FIXED_PRINT_HEADER_IMAGE_WIDTH_MM = 598 / 10;
+/** Printed header image width (mm); slightly under card width for borders. */
+export const FIXED_PRINT_HEADER_IMAGE_WIDTH_MM = 58;
+/** Header strip height on print/PDF (mm). */
+export const FIXED_PRINT_HEADER_STRIP_HEIGHT_MM = 9;
 
 /**
  * Allowed counts for “boards per printed page” and the CSS grid used on each sheet

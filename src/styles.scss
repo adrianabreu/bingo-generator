@@ -51,7 +51,7 @@ body {
       left: 0;
       right: 0;
       top: 0;
-      height: calc(60px + 2px);
+      height: 62px;
       background-color: var(--bingo-header-strip);
       border-radius: 4px 4px 0 0;
       z-index: 0;
@@ -110,23 +110,16 @@ body {
   }
 }
 
-/* Div + background-size scales reliably in print/PDF; <img>+object-fit often does not. */
-.mx-bingo-board_header-banner {
-  position: absolute;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  overflow: hidden;
-  background-color: var(--bingo-header-strip);
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
-  print-color-adjust: exact;
-  -webkit-print-color-adjust: exact;
+@media screen {
+  .mx-bingo-board_row--header .mx-bingo-board_header-img {
+    width: 100% !important;
+    height: 100% !important;
+    min-width: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    object-fit: cover;
+    object-position: center center;
+  }
 }
 
 /* Fixed card height: song rows share remaining space (screen preview). */
@@ -219,7 +212,7 @@ body {
       left: 0;
       right: 0;
       top: 0;
-      height: calc(9mm + 1px);
+      height: 9mm;
       background-color: var(--bingo-header-strip);
       z-index: 0;
       pointer-events: none;
@@ -281,8 +274,9 @@ body {
     padding: 0.35mm 0.25mm;
   }
 
-  .mx-bingo-board_header-banner {
-    background-size: var(--print-header-bg-width-mm, 59.8mm) auto;
+  .mx-bingo-board_header-img {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 
   .mx-print-opts {

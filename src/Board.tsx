@@ -5,6 +5,7 @@ import {
   FIXED_PRINT_CARD_WIDTH_MM,
   FIXED_PRINT_GRID_COLS,
   FIXED_PRINT_HEADER_IMAGE_WIDTH_MM,
+  FIXED_PRINT_HEADER_STRIP_HEIGHT_MM,
   chunkIntoSheets,
 } from './constants/printLayout';
 import { DEFAULT_BINGO_HEADER_IMAGE } from './defaultHeader';
@@ -34,9 +35,17 @@ export class Board extends React.Component<{ boards: string[][][]; header: strin
       overflow: 'hidden',
     };
 
-    const headerBannerStyle: React.CSSProperties = {
-      backgroundImage: `url(${JSON.stringify(headerSrc)})`,
-      ['--print-header-bg-width-mm' as string]: `${FIXED_PRINT_HEADER_IMAGE_WIDTH_MM}mm`,
+    const headerImgStyle: React.CSSProperties = {
+      width: `${FIXED_PRINT_HEADER_IMAGE_WIDTH_MM}mm`,
+      height: `${FIXED_PRINT_HEADER_STRIP_HEIGHT_MM}mm`,
+      objectFit: 'cover',
+      objectPosition: 'center',
+      display: 'block',
+      minWidth: 0,
+      marginLeft: 'auto',
+      marginRight: 'auto',
+      WebkitPrintColorAdjust: 'exact',
+      printColorAdjust: 'exact',
     };
 
     return (
@@ -58,11 +67,11 @@ export class Board extends React.Component<{ boards: string[][][]; header: strin
                   style={boardFixedHeightStyle}
                 >
                   <div className="mx-bingo-board_row mx-bingo-board_row--header">
-                    <div
-                      className="mx-bingo-board_header-banner"
-                      role="img"
-                      aria-label="Bingo card header"
-                      style={headerBannerStyle}
+                    <img
+                      className="mx-bingo-board_header-img"
+                      src={headerSrc}
+                      alt="Bingo card header"
+                      style={headerImgStyle}
                     />
                   </div>
                   {board.map((row, rowIndex) => (

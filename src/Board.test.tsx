@@ -4,6 +4,7 @@ import {
   FIXED_BOARDS_PER_PRINT_PAGE,
   FIXED_PRINT_CARD_WIDTH_MM,
 } from './constants/printLayout';
+import { DEFAULT_BINGO_HEADER_IMAGE } from './defaultHeader';
 import { Board } from './Board';
 
 const sampleBoards: string[][][] = [
@@ -40,16 +41,16 @@ describe('Board', () => {
 
   it('uses default SVG header when header prop is empty', () => {
     render(<Board boards={sampleBoards} header="" />);
-    const banners = screen.getAllByRole('img', { name: /bingo card header/i });
-    expect(banners).toHaveLength(2);
-    expect((banners[0] as HTMLElement).style.backgroundImage).toContain('Bingo');
+    const imgs = screen.getAllByRole('img', { name: /bingo card header/i });
+    expect(imgs).toHaveLength(2);
+    expect(imgs[0].getAttribute('src')).toBe(DEFAULT_BINGO_HEADER_IMAGE);
   });
 
   it('uses custom header URL when provided', () => {
     render(<Board boards={sampleBoards} header="https://example.com/logo.png" />);
-    const banners = screen.getAllByRole('img', { name: /bingo card header/i });
-    expect(banners).toHaveLength(2);
-    expect((banners[0] as HTMLElement).style.backgroundImage).toContain('example.com');
+    const imgs = screen.getAllByRole('img', { name: /bingo card header/i });
+    expect(imgs).toHaveLength(2);
+    expect(imgs[0]).toHaveAttribute('src', 'https://example.com/logo.png');
   });
 
   it('always uses fixed print height class on every card', () => {

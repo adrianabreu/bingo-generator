@@ -2,6 +2,7 @@ import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import App from './App';
+import { DEFAULT_BINGO_HEADER_IMAGE } from './defaultHeader';
 import {
   FIXED_BOARDS_PER_PRINT_PAGE,
   FIXED_PRINT_CARD_HEIGHT_MM,
@@ -75,7 +76,7 @@ describe('App UI', () => {
     expect(screen.getByText('C')).toBeInTheDocument();
     expect(screen.getByText('D')).toBeInTheDocument();
     const imgs = screen.getAllByRole('img', { name: /bingo card header/i });
-    expect((imgs[0] as HTMLElement).style.backgroundImage).toContain('Bingo');
+    expect(imgs[0].getAttribute('src')).toBe(DEFAULT_BINGO_HEADER_IMAGE);
     expect(screen.queryByRole('button', { name: /generate/i })).not.toBeInTheDocument();
     expect(screen.getByTestId('print-options-panel')).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: /print layout/i })).toBeInTheDocument();
@@ -151,7 +152,7 @@ describe('App UI', () => {
 
     await waitFor(() => {
       const img = screen.getByRole('img', { name: /bingo card header/i });
-      expect((img as HTMLElement).style.backgroundImage).toContain('data:image/png');
+      expect(img).toHaveAttribute('src', dataUrl);
     });
   });
 });
