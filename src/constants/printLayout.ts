@@ -1,6 +1,13 @@
 /** Default boards per sheet when the form does not specify a value. */
 export const DEFAULT_BOARDS_PER_PRINT_PAGE = 9;
 
+/** Immutable print/PDF layout for this app (nine cards per sheet in a 3×3 grid). */
+export const FIXED_BOARDS_PER_PRINT_PAGE = 9;
+export const FIXED_PRINT_GRID_COLS = 3;
+export const FIXED_PRINT_GRID_ROWS = 3;
+export const FIXED_PRINT_CARD_WIDTH_MM = 60;
+export const FIXED_PRINT_CARD_HEIGHT_MM = 45;
+
 /**
  * Allowed counts for “boards per printed page” and the CSS grid used on each sheet
  * (columns × rows, landscape A4).

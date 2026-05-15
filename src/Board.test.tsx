@@ -1,6 +1,10 @@
 import { cleanup, render, screen, within } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 import { DEFAULT_BINGO_HEADER_IMAGE } from './defaultHeader';
+import {
+  FIXED_BOARDS_PER_PRINT_PAGE,
+  FIXED_PRINT_CARD_WIDTH_MM,
+} from './constants/printLayout';
 import { Board } from './Board';
 
 const sampleBoards: string[][][] = [
@@ -49,9 +53,9 @@ describe('Board', () => {
     expect(imgs[0]).toHaveAttribute('src', 'https://example.com/logo.png');
   });
 
-  it('adds fixed-height class when print card height is set', () => {
-    render(<Board boards={sampleBoards} header="" printCardHeightMm={70} />);
-    expect(document.querySelector('.mx-bingo-board--fixed-height')).not.toBeNull();
+  it('always uses fixed print height class on every card', () => {
+    render(<Board boards={sampleBoards} header="" />);
+    expect(document.querySelectorAll('.mx-bingo-board--fixed-height')).toHaveLength(2);
   });
 
   it('places song cells inside grid rows', () => {
@@ -64,28 +68,25 @@ describe('Board', () => {
     expect(within(dataRows[0] as HTMLElement).getByText('Bravo')).toBeInTheDocument();
   });
 
-  it('chunks boards into print sheets of 9 for pagination by default', () => {
+  it(`chunks boards into print sheets of ${FIXED_BOARDS_PER_PRINT_PAGE}`, () => {
     const boards = Array.from({ length: 12 }, (_, i) => singleCellBoard(`C${i}`));
     const { container } = render(<Board boards={boards} header="" />);
 
     const sheets = screen.getAllByTestId('bingo-print-sheet');
     expect(sheets).toHaveLength(2);
-    expect(sheets[0].querySelectorAll('.mx-bingo-board')).toHaveLength(9);
+    expect(sheets[0].querySelectorAll('.mx-bingo-board')).toHaveLength(FIXED_BOARDS_PER_PRINT_PAGE);
     expect(sheets[1].querySelectorAll('.mx-bingo-board')).toHaveLength(3);
     expect(container.querySelectorAll('.mx-bingo-board')).toHaveLength(12);
   });
 
-  it('respects boardsPerPrintPage for sheet size and grid CSS variables', () => {
+  it('uses fixed grid CSS variables for print', () => {
     const boards = Array.from({ length: 12 }, (_, i) => singleCellBoard(`C${i}`));
-    render(<Board boards={boards} header="" boardsPerPrintPage={6} />);
+    render(<Board boards={boards} header="" />);
 
     const sheets = screen.getAllByTestId('bingo-print-sheet');
-    expect(sheets).toHaveLength(2);
-    expect(sheets[0].querySelectorAll('.mx-bingo-board')).toHaveLength(6);
-    expect(sheets[1].querySelectorAll('.mx-bingo-board')).toHaveLength(6);
     expect(sheets[0]).toHaveStyle({
       '--print-grid-cols': '3',
-      '--print-board-mm': '46mm',
+      '--print-board-mm': `${FIXED_PRINT_CARD_WIDTH_MM}mm`,
     });
   });
 

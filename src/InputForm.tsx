@@ -1,13 +1,11 @@
 import { generateCombinations, isSafeGeneration } from './core/BingoGenerator';
 import * as React from 'react';
 import {
-  DEFAULT_BOARDS_PER_PRINT_PAGE,
-  PRINT_LAYOUT_BY_COUNT,
-  clampPrintCardWidthMm,
-  getPrintGridLayout,
-  normalizePrintCardHeightMm,
-  printRowFitsApproxLandscape,
-  PRINTABLE_WIDTH_MM_APPROX,
+  FIXED_BOARDS_PER_PRINT_PAGE,
+  FIXED_PRINT_CARD_HEIGHT_MM,
+  FIXED_PRINT_CARD_WIDTH_MM,
+  FIXED_PRINT_GRID_COLS,
+  FIXED_PRINT_GRID_ROWS,
 } from './constants/printLayout';
 import type { GenerationPayload } from './generationPayload';
 
@@ -34,21 +32,6 @@ export class InputForm extends React.Component<Props> {
     const headerUrl = (form.elements.namedItem('headerUrl') as HTMLInputElement).value.trim();
     const headerFileInput = form.elements.namedItem('headerFile') as HTMLInputElement;
     const file = headerFileInput.files?.[0];
-    const boardsPerPrintRaw = +(form.elements.namedItem('boardsPerPrintPage') as HTMLSelectElement).value;
-    const boardsPerPrintPage = PRINT_LAYOUT_BY_COUNT[boardsPerPrintRaw]
-      ? boardsPerPrintRaw
-      : DEFAULT_BOARDS_PER_PRINT_PAGE;
-
-    const printWInput = (form.elements.namedItem('printCardWidthMm') as HTMLInputElement).value;
-    const printHInput = (form.elements.namedItem('printCardHeightMm') as HTMLInputElement).value;
-    const printCardWidthMm = clampPrintCardWidthMm(
-      printWInput.trim() === '' || !Number.isFinite(+printWInput)
-        ? 46
-        : +printWInput
-    );
-    const printCardHeightMm = normalizePrintCardHeightMm(
-      printHInput.trim() === '' || !Number.isFinite(+printHInput) ? null : +printHInput
-    );
 
     const finish = (header: string) => {
       if (!isSafeGeneration(songs, amount, height, width)) {
@@ -56,13 +39,6 @@ export class InputForm extends React.Component<Props> {
           'Need at least width×height song lines, and enough combinations for unique boards (fewer boards or more songs).'
         );
         return;
-      }
-
-      const { cols } = getPrintGridLayout(boardsPerPrintPage);
-      if (!printRowFitsApproxLandscape(cols, printCardWidthMm)) {
-        window.alert(
-          `With ${cols} columns, print width × ${cols} may be wider than a typical A4 landscape page (~${PRINTABLE_WIDTH_MM_APPROX} mm). Try a smaller print width or fewer boards per page.`
-        );
       }
 
       const matrices = generateCombinations(width, height, songs, amount);
@@ -75,9 +51,6 @@ export class InputForm extends React.Component<Props> {
       this.props.setParentState({
         boards: temp,
         header,
-        boardsPerPrintPage,
-        printCardWidthMm,
-        printCardHeightMm,
       });
     };
 
@@ -96,6 +69,32 @@ export class InputForm extends React.Component<Props> {
   render() {
     return (
       <form className="mx-board-form" onSubmit={this.handleSubmit}>
+        <div className="mx-board-form__group mx-board-form__group--fixed-print">
+          <span className="mx-board-form__label">Print / PDF layout (fixed)</span>
+          <dl className="mx-board-form__fixed-print" aria-label="Fixed print dimensions">
+            <div className="mx-board-form__fixed-print-row">
+              <dt>Boards per sheet</dt>
+              <dd>{FIXED_BOARDS_PER_PRINT_PAGE}</dd>
+            </div>
+            <div className="mx-board-form__fixed-print-row">
+              <dt>Columns × rows</dt>
+              <dd>
+                {FIXED_PRINT_GRID_COLS} × {FIXED_PRINT_GRID_ROWS}
+              </dd>
+            </div>
+            <div className="mx-board-form__fixed-print-row">
+              <dt>Each card width</dt>
+              <dd>{FIXED_PRINT_CARD_WIDTH_MM} mm</dd>
+            </div>
+            <div className="mx-board-form__fixed-print-row">
+              <dt>Each card height</dt>
+              <dd>{FIXED_PRINT_CARD_HEIGHT_MM} mm</dd>
+            </div>
+          </dl>
+          <span className="mx-board-form__hint">
+            Nine cards per sheet use a 3×3 grid (three columns and three rows).
+          </span>
+        </div>
         <div className="mx-board-form__group">
           <label className="mx-board-form__label mx-board-form__label--area" htmlFor="songs">
             Song list
@@ -130,57 +129,6 @@ export class InputForm extends React.Component<Props> {
             Song grid — cells down
           </label>
           <input className="mx-board-form__input" type="number" id="height" name="height" min={1} />
-        </div>
-        <div className="mx-board-form__group">
-          <label className="mx-board-form__label" htmlFor="boardsPerPrintPage">
-            Boards per printed page (layout)
-          </label>
-          <select
-            className="mx-board-form__input"
-            id="boardsPerPrintPage"
-            name="boardsPerPrintPage"
-            defaultValue={DEFAULT_BOARDS_PER_PRINT_PAGE}
-          >
-            <option value={1}>1 (1×1)</option>
-            <option value={2}>2 (2×1)</option>
-            <option value={4}>4 (2×2)</option>
-            <option value={6}>6 (3×2)</option>
-            <option value={9}>9 (3×3)</option>
-            <option value={12}>12 (4×3)</option>
-          </select>
-        </div>
-        <div className="mx-board-form__group">
-          <label className="mx-board-form__label" htmlFor="printCardWidthMm">
-            Print — each card width (mm)
-          </label>
-          <input
-            className="mx-board-form__input"
-            type="number"
-            id="printCardWidthMm"
-            name="printCardWidthMm"
-            min={20}
-            max={95}
-            step={1}
-            defaultValue={46}
-            placeholder="46"
-          />
-          <span className="mx-board-form__hint">Used for PDF/print; typical A4 row fits about three 46 mm cards.</span>
-        </div>
-        <div className="mx-board-form__group">
-          <label className="mx-board-form__label" htmlFor="printCardHeightMm">
-            Print — each card height (mm, optional)
-          </label>
-          <input
-            className="mx-board-form__input"
-            type="number"
-            id="printCardHeightMm"
-            name="printCardHeightMm"
-            min={25}
-            max={200}
-            step={1}
-            placeholder="Leave empty = auto from song rows"
-          />
-          <span className="mx-board-form__hint">If set, content is clipped to this height. Leave empty to grow with the grid.</span>
         </div>
         <div className="mx-board-form__group">
           <label className="mx-board-form__label" htmlFor="headerUrl">

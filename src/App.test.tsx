@@ -3,6 +3,13 @@ import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import App from './App';
 import { DEFAULT_BINGO_HEADER_IMAGE } from './defaultHeader';
+import {
+  FIXED_BOARDS_PER_PRINT_PAGE,
+  FIXED_PRINT_CARD_HEIGHT_MM,
+  FIXED_PRINT_CARD_WIDTH_MM,
+  FIXED_PRINT_GRID_COLS,
+  FIXED_PRINT_GRID_ROWS,
+} from './constants/printLayout';
 
 const genMocks = vi.hoisted(() => ({
   isSafeGeneration: vi.fn(() => true),
@@ -42,9 +49,12 @@ describe('App UI', () => {
     expect(screen.getByLabelText(/how many boards \(total\)/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/song grid.*across/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/song grid.*down/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/boards per printed page/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/print.*each card width/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/print.*each card height/i)).toBeInTheDocument();
+    expect(screen.getByText(/print \/ pdf layout \(fixed\)/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/fixed print dimensions/i)).toBeInTheDocument();
+    expect(screen.getByText(String(FIXED_BOARDS_PER_PRINT_PAGE))).toBeInTheDocument();
+    expect(screen.getByText(`${FIXED_PRINT_GRID_COLS} × ${FIXED_PRINT_GRID_ROWS}`)).toBeInTheDocument();
+    expect(screen.getByText(`${FIXED_PRINT_CARD_WIDTH_MM} mm`)).toBeInTheDocument();
+    expect(screen.getByText(`${FIXED_PRINT_CARD_HEIGHT_MM} mm`)).toBeInTheDocument();
     expect(screen.getByLabelText(/header image url/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/upload header image/i)).toBeInTheDocument();
   });
@@ -72,7 +82,7 @@ describe('App UI', () => {
     expect(screen.getByRole('heading', { name: /print layout/i })).toBeInTheDocument();
   });
 
-  it('shows print options on the board view and can return to the form', async () => {
+  it('shows fixed print summary on the board view and can return to the form', async () => {
     const user = userEvent.setup();
     render(<App />);
 
@@ -86,8 +96,7 @@ describe('App UI', () => {
       expect(screen.getByTestId('print-options-panel')).toBeInTheDocument();
     });
 
-    await user.selectOptions(screen.getByLabelText(/boards per printed page/i), '6');
-    expect((screen.getByLabelText(/boards per printed page/i) as HTMLSelectElement).value).toBe('6');
+    expect(screen.getByLabelText(/fixed print dimensions/i)).toBeInTheDocument();
 
     await user.click(screen.getByRole('button', { name: /change songs/i }));
     expect(screen.getByRole('button', { name: /generate/i })).toBeInTheDocument();

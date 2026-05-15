@@ -1,52 +1,37 @@
 import * as React from 'react';
 import {
-  DEFAULT_BOARDS_PER_PRINT_PAGE,
+  FIXED_BOARDS_PER_PRINT_PAGE,
+  FIXED_PRINT_CARD_HEIGHT_MM,
+  FIXED_PRINT_CARD_WIDTH_MM,
+  FIXED_PRINT_GRID_COLS,
   chunkIntoSheets,
-  getPrintGridLayout,
-  getSuggestedPrintCardWidthMm,
-  clampPrintCardWidthMm,
-  normalizePrintCardHeightMm,
 } from './constants/printLayout';
 import { DEFAULT_BINGO_HEADER_IMAGE } from './defaultHeader';
 
-export type BoardPrintOptions = {
-  boardsPerPrintPage?: number;
-  /** Printed card width (mm). */
-  printCardWidthMm?: number;
-  /** Printed card height (mm); omit or null = grow with song rows. */
-  printCardHeightMm?: number | null;
-};
-
-export class Board extends React.Component<
-  { boards: string[][][]; header: string } & BoardPrintOptions,
-  {}
-> {
-  constructor(props: { boards: string[][][]; header: string } & BoardPrintOptions) {
+export class Board extends React.Component<{ boards: string[][][]; header: string }, {}> {
+  constructor(props: { boards: string[][][]; header: string }) {
     super(props);
   }
 
   render() {
     const headerSrc =
       this.props.header && this.props.header.trim() ? this.props.header.trim() : DEFAULT_BINGO_HEADER_IMAGE;
-    const { cols, count: perSheet } = getPrintGridLayout(
-      this.props.boardsPerPrintPage ?? DEFAULT_BOARDS_PER_PRINT_PAGE
-    );
+    const perSheet = FIXED_BOARDS_PER_PRINT_PAGE;
+    const cols = FIXED_PRINT_GRID_COLS;
     const sheets = chunkIntoSheets(this.props.boards, perSheet);
 
-    const widthMm = clampPrintCardWidthMm(
-      this.props.printCardWidthMm ?? getSuggestedPrintCardWidthMm(cols)
-    );
-    const heightMm = normalizePrintCardHeightMm(this.props.printCardHeightMm);
+    const widthMm = FIXED_PRINT_CARD_WIDTH_MM;
+    const heightMm = FIXED_PRINT_CARD_HEIGHT_MM;
 
     const sheetGridStyle = {
       ['--print-grid-cols' as string]: String(cols),
       ['--print-board-mm' as string]: `${widthMm}mm`,
     } as React.CSSProperties;
 
-    const boardFixedHeightStyle: React.CSSProperties | undefined =
-      heightMm != null
-        ? { height: `${heightMm}mm`, overflow: 'hidden' as const }
-        : undefined;
+    const boardFixedHeightStyle: React.CSSProperties = {
+      height: `${heightMm}mm`,
+      overflow: 'hidden',
+    };
 
     return (
       <div className="mx-bingo">
@@ -62,12 +47,7 @@ export class Board extends React.Component<
               const globalIndex = sheetIndex * perSheet + boardIndex;
               return (
                 <div
-                  className={[
-                    'mx-bingo-board',
-                    heightMm != null ? 'mx-bingo-board--fixed-height' : '',
-                  ]
-                    .filter(Boolean)
-                    .join(' ')}
+                  className="mx-bingo-board mx-bingo-board--fixed-height"
                   key={globalIndex}
                   style={boardFixedHeightStyle}
                 >

@@ -4,6 +4,11 @@ import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import {
   DEFAULT_BOARDS_PER_PRINT_PAGE,
+  FIXED_BOARDS_PER_PRINT_PAGE,
+  FIXED_PRINT_CARD_HEIGHT_MM,
+  FIXED_PRINT_CARD_WIDTH_MM,
+  FIXED_PRINT_GRID_COLS,
+  FIXED_PRINT_GRID_ROWS,
   PRINT_LAYOUT_BY_COUNT,
   chunkIntoSheets,
   clampPrintCardWidthMm,
@@ -15,6 +20,14 @@ import {
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 describe('print layout', () => {
+  it('exposes fixed print dimensions used by Board and forms', () => {
+    expect(FIXED_BOARDS_PER_PRINT_PAGE).toBe(9);
+    expect(FIXED_PRINT_GRID_COLS).toBe(3);
+    expect(FIXED_PRINT_GRID_ROWS).toBe(3);
+    expect(FIXED_PRINT_CARD_WIDTH_MM).toBe(60);
+    expect(FIXED_PRINT_CARD_HEIGHT_MM).toBe(45);
+  });
+
   it('maps each preset count to a grid whose area matches the count', () => {
     for (const [count, { cols, rows }] of Object.entries(PRINT_LAYOUT_BY_COUNT)) {
       expect(cols * rows).toBe(+count);

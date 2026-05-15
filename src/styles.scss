@@ -168,7 +168,7 @@ body {
   .mx-bingo-print-sheet {
     display: grid;
     /* minmax(0, …): wide header images must not expand grid tracks in print/PDF. */
-    grid-template-columns: repeat(var(--print-grid-cols, 3), minmax(0, var(--print-board-mm, 46mm)));
+    grid-template-columns: repeat(var(--print-grid-cols, 3), minmax(0, var(--print-board-mm, 60mm)));
     grid-auto-rows: auto;
     align-items: stretch;
     justify-content: center;
@@ -191,7 +191,7 @@ body {
     position: relative;
     break-inside: avoid;
     page-break-inside: avoid;
-    width: var(--print-board-mm, 46mm);
+    width: var(--print-board-mm, 60mm);
     max-width: 100%;
     min-width: 0;
     height: auto;
@@ -343,6 +343,37 @@ body {
     color: #4a5562;
   }
 
+  &__fixed {
+    margin: 0;
+    padding: 0.75rem 1rem;
+    background: #fff;
+    border: 1px solid #c3c9cf;
+    border-radius: 6px;
+    display: grid;
+    gap: 0.45rem 1rem;
+  }
+
+  &__fixed-row {
+    display: grid;
+    grid-template-columns: minmax(0, 11rem) 1fr;
+    gap: 0.75rem;
+    align-items: baseline;
+
+    dt {
+      margin: 0;
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: #3d4a56;
+    }
+
+    dd {
+      margin: 0;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #1e2327;
+    }
+  }
+
   &__grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
@@ -428,6 +459,44 @@ body {
     margin-bottom: 1rem;
     gap: 0.35rem;
     min-height: 0;
+
+    &--fixed-print {
+      padding: 1rem 1rem 0.85rem;
+      background: #f4f6f8;
+      border: 1px solid #c3c9cf;
+      border-radius: 8px;
+    }
+  }
+
+  &__fixed-print {
+    margin: 0.35rem 0 0.25rem;
+    padding: 0.65rem 0.85rem;
+    background: #fff;
+    border: 1px solid #d5dbe3;
+    border-radius: 6px;
+    display: grid;
+    gap: 0.4rem 0.75rem;
+  }
+
+  &__fixed-print-row {
+    display: grid;
+    grid-template-columns: minmax(0, 11rem) 1fr;
+    gap: 0.65rem;
+    align-items: baseline;
+
+    dt {
+      margin: 0;
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: #3d4a56;
+    }
+
+    dd {
+      margin: 0;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #1e2327;
+    }
   }
 
   &__hint {
