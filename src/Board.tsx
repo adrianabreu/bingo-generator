@@ -33,6 +33,10 @@ export class Board extends React.Component<{ boards: string[][][]; header: strin
       overflow: 'hidden',
     };
 
+    const headerBannerStyle: React.CSSProperties = {
+      backgroundImage: `url(${JSON.stringify(headerSrc)})`,
+    };
+
     return (
       <div className="mx-bingo">
         {sheets.map((boardsOnSheet, sheetIndex) => (
@@ -52,7 +56,12 @@ export class Board extends React.Component<{ boards: string[][][]; header: strin
                   style={boardFixedHeightStyle}
                 >
                   <div className="mx-bingo-board_row mx-bingo-board_row--header">
-                    <img src={headerSrc} alt="Bingo card header" />
+                    <div
+                      className="mx-bingo-board_header-banner"
+                      role="img"
+                      aria-label="Bingo card header"
+                      style={headerBannerStyle}
+                    />
                   </div>
                   {board.map((row, rowIndex) => (
                     <div className="mx-bingo-board_row" key={rowIndex}>
